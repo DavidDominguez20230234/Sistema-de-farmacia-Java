@@ -37,7 +37,12 @@ public class EmployeesController implements ActionListener, MouseListener, KeyLi
         this.views.btn_delete_employee.addActionListener(this);
         //Botón de cancelar
         this.views.btn_cancel_employee.addActionListener(this);
+        //Botón de cambiar la contraseña
+        this.views.btn_modify_data.addActionListener(this);
+        //Label el menú en escucha
+        this.views.lbl_Employees.addMouseListener(this);
         this.views.employee_table.addMouseListener(this);
+        //Buscador
         this.views.txt_employee_search.addKeyListener(this);
     }
 
@@ -53,7 +58,7 @@ public class EmployeesController implements ActionListener, MouseListener, KeyLi
                     || views.txt_employee_email.getText().equals("")
                     || views.cmb_employee_roll.getSelectedItem().toString().equals("")
                     ||String.valueOf(views.txt_employee_password.getPassword()).equals("")){
-                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios");
+                JOptionPane.showMessageDialog(null, "Todos los datos son obligatorios");
             }else{
                 //Insertar los datos
                 employee.setId(Integer.parseInt(views.txt_employee_id.getText().trim()));
@@ -114,13 +119,15 @@ public class EmployeesController implements ActionListener, MouseListener, KeyLi
          }
       }else if(e.getSource() == views.btn_delete_employee){
           int row = views.employee_table.getSelectedRow();
-          
+          //Verificar si se ha seleccionado alguna fila
           if (row == -1){
-              JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún empleado para modificar");
+              JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún empleado para eliminar");
+              //Verificar si se ha su mismo usuario
           }else if(views.employee_table.getValueAt(row, 0).equals(id_user)){
               JOptionPane.showMessageDialog(null, "No puede eliminar su usuario");     
           }else{
               int id = Integer.parseInt(views.employee_table.getValueAt(row, 0).toString());
+              //Mensaje de confirmación
               int confirm = JOptionPane.showConfirmDialog(null, "¿Desea eliminar este empleado?");
               
               if(confirm == 0 && employees_dao.deleteEmployeeQuery(id) != false){
@@ -138,6 +145,27 @@ public class EmployeesController implements ActionListener, MouseListener, KeyLi
            views.btn_register_employee.setEnabled(true);
            views.txt_employee_password.setEnabled(true);
            views.txt_employee_id.setEnabled(true);
+       }else if(e.getSource() == views.btn_modify_data){
+           //Obtener información de text field password
+           String password = String.valueOf(views.txt_password_midify.getPassword());
+           String confirm_password = String.valueOf(views.txt_password_modify_confirmed.getPassword());
+           //Verificar que los campos no estén vacíos 
+           if(!password.equals("") || !confirm_password.equals("")){
+               //Verificar que la confiamción conicida con la contraseña
+               if(password.equals(confirm_password)){
+                   employee.setPassword(String.valueOf(views.txt_password_midify.getPassword()));
+                   //Confirmar que la contraseña ha sido modificada
+                   if(employees_dao.updateEmployeePasswordQuery(employee) != false){
+                       JOptionPane.showMessageDialog(null, "La contraseña ha sido modificada exitosamente");
+                   }else {
+                       JOptionPane.showMessageDialog(null, "Ha ocurrido un error al modificar la contraseña");
+                   } 
+               }else{
+                   JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
+               }
+           }else{
+               JOptionPane.showMessageDialog(null, "Ambos campos son obligatorios");
+           }
        }
     }
     
@@ -164,9 +192,9 @@ public class EmployeesController implements ActionListener, MouseListener, KeyLi
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        //Mostrar datos seleccionados de la tabla
         if(e.getSource() == views.employee_table){
             int row = views.employee_table.rowAtPoint(e.getPoint());
-            
             views.txt_employee_id.setText(views.employee_table.getValueAt(row, 0).toString());
             views.txt_employee_fullname.setText(views.employee_table.getValueAt(row, 1).toString());
             views.txt_employee_username.setText(views.employee_table.getValueAt(row, 2).toString());
@@ -179,8 +207,19 @@ public class EmployeesController implements ActionListener, MouseListener, KeyLi
             views.txt_employee_id.setEditable(false);
             views.txt_employee_password.setEnabled(false);
             views.btn_register_employee.setEnabled(false);
-            
-            
+
+        }else if (e.getSource() == views.lbl_Employees){
+            if(rol.equals("Administrador")){
+                views.jTabbedPane1.setSelectedIndex(7);
+                clearTable();
+                clearFields();
+                listAllEmployees();
+   
+            }else{
+                views.jTabbedPane1.setEnabledAt(7, false);
+                views.lbl_Employees.setEnabled(false);
+                JOptionPane.showMessageDialog(null, "Debe ser administrador para acceder a esta vista");
+            }
         }
     }
 
@@ -227,7 +266,7 @@ public class EmployeesController implements ActionListener, MouseListener, KeyLi
         views.txt_employee_username.setText("");
         views.cmb_employee_roll.setSelectedItem(0);
     }
-    //Metodo para limpiar la tabla
+    //Metodo para limpiar la tablarTable(){
     public void clearTable(){
         for(int i = 0; i < model.getRowCount(); i++){
             model.removeRow(i);

@@ -80,8 +80,8 @@ public class SuppliersDao {
     
     //Modificar proveedor
     public boolean updateSupplierQuery(Suppliers supplier){
-        String query = "UPDATE suppliers SET name = ?, description = ?,address = ?, telephone, email = ?, city = ?, updated = ? "
-                + "WHERE id = ";
+        String query = "UPDATE suppliers SET name = ?, description = ?, address = ?, telephone = ?, email = ?, city = ?, updated = ? "
+                + "WHERE id = ?";
         
         Timestamp datetime = new Timestamp(new Date().getTime());
         

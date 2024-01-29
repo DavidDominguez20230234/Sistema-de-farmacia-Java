@@ -4,6 +4,11 @@ package controller;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import static model.EmployeesDao.address_user;
+import static model.EmployeesDao.email_user;
+import static model.EmployeesDao.full_name_user;
+import static model.EmployeesDao.id_user;
+import static model.EmployeesDao.telephone_user;
 import view.SystemView;
 
 
@@ -21,7 +26,18 @@ public class SettingsControllers implements MouseListener{
         this.view.lbl_Reports.addMouseListener(this);
         this.view.lbl_Categories.addMouseListener(this);
         this.view.lbl_Settings.addMouseListener(this);
+        Profile();
     }
+    //Asignar el perfil del usuario 
+    public void Profile(){
+        this.view.txt_id_profile.setText("" + id_user);
+        this.view.txt_name_profile.setText("" + full_name_user);
+        this.view.txt_address_profile.setText("" + address_user);
+        this.view.txt_telephone_profile.setText("" + telephone_user);
+        this.view.txt_email_profile.setText("" + email_user);
+        
+    }
+    
 
     @Override
     public void mouseClicked(MouseEvent e) {

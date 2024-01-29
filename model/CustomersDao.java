@@ -48,7 +48,7 @@ public class CustomersDao {
     public List listCustomerQuery(String value){
         List<Customers> list_customers = new ArrayList();
         String query = "SELECT * FROM customers";
-        String query_search_customer = "SELECT * FROM customers WEHRE id LIKE '%" +value+ "%'";
+        String query_search_customer = "SELECT * FROM customers WHERE id LIKE '%"+value+"%'";
         
         try{
         conn = cn.getConnection();
@@ -75,7 +75,7 @@ public class CustomersDao {
     
     //Modificar cliente
     public boolean updateCustomerQuery(Customers customer){
-        String query = "UPDATE customers fullname = ?, address = ?, telephone = ?, email = ?, updated = ? "
+        String query = "UPDATE customers SET fullname = ?, address = ?, telephone = ?, email = ?, updated = ? "
                 + "WHERE id = ?";
         
         Timestamp datetime = new Timestamp(new Date().getTime());

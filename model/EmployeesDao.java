@@ -178,7 +178,7 @@ public class EmployeesDao {
         
         }catch(SQLException e){
             JOptionPane.showMessageDialog(null, "Ha ocurrido un error al modificar la contraseña: " + e);
-            
-        }return false;
+              
+        }return true;
     }
 }
